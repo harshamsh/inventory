@@ -26,6 +26,7 @@ const AddItem = ({ items, setItems }) => {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [quantity, setQuantity] = useState("");
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -45,10 +46,12 @@ const AddItem = ({ items, setItems }) => {
       .post("http://localhost:5000/api/items/", {
         name,
         description,
+        quantity,
       })
       .then((response) => {
         setName("");
         setDescription("");
+        setQuantity("");
         setItems([...items, response.data]);
       })
       .then(closeModal())
@@ -84,6 +87,15 @@ const AddItem = ({ items, setItems }) => {
               required
               placeholder="Item Description"
               multiline
+            />
+            <TextField
+              id="quantity"
+              label="Item Quantity"
+              type="number"
+              value={quantity}
+              onChange={(event) => setQuantity(event.target.value)}
+              required
+              placeholder="Item Quantity"
             />
           </form>
         </DialogContent>

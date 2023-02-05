@@ -23,30 +23,41 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const EditItem = ({ item, items, setItems, fetchItems }) => {
+  // State to keep track of whether the edit modal is open or closed
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // State to store the values of the item's name, description and quantity
   const [name, setName] = useState(item.name);
   const [description, setDescription] = useState(item.description);
+  const [quantity, setQuantity] = useState(item.quantity);
 
+  // Function to open the edit modal
   const openEditModal = () => {
     setIsEditModalOpen(true);
   };
 
+  // Function to close the edit modal
   const closeEditModal = () => {
     setIsEditModalOpen(false);
   };
 
+  // Function to handle the edit action
   const handleEdit = (event) => {
     event.preventDefault();
-    if (!name || !description) {
+    // Check if the required fields have been filled
+    if (!name || !description || !quantity) {
       alert("Please fill all details.");
       return;
     }
+    // Make a PUT request to the API to update the item
     axios
       .put(`http://localhost:5000/api/items/${item._id}`, {
         name,
         description,
+        quantity,
       })
       .then((response) => {
+        // Update the items state with the updated item from the response
         setItems(
           items.map((currentItem) => {
             if (currentItem._id === response.data._id) {
@@ -56,14 +67,17 @@ const EditItem = ({ item, items, setItems, fetchItems }) => {
           })
         );
       })
-      //   .then(() => fetchItems())
+      // Close the modal
       .then(() => closeEditModal())
+      // Log any error
       .catch((error) => console.error(error));
   };
   const classes = useStyles();
   return (
     <div>
+      {/* Render the edit icon and bind the openEditModal function to its onClick event */}
       <EditIcon onClick={openEditModal} />
+      {/* Render the edit modal */}
       <Dialog open={isEditModalOpen} onClose={closeEditModal}>
         <DialogTitle>Edit Item</DialogTitle>
         <DialogContent>
@@ -85,7 +99,15 @@ const EditItem = ({ item, items, setItems, fetchItems }) => {
               required
               placeholder="Item Description"
               multiline
-              rows={4}
+            />
+            <TextField
+              id="quantity"
+              label="Item Quantity"
+              type="number"
+              value={quantity}
+              onChange={(event) => setQuantity(event.target.value)}
+              required
+              placeholder="Item Quantity"
             />
           </form>
         </DialogContent>
