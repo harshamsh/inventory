@@ -8,6 +8,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import axios from "axios";
 
+// Styles for the form
 const useStyles = makeStyles((theme) => ({
   form: {
     display: "flex",
@@ -21,21 +22,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// AddItem component to add a new item to inventory
 const AddItem = ({ items, setItems }) => {
+  // State for handling the open and close of the modal
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // State for storing the item name, description, and quantity
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState("");
 
+  // Function to open the modal
   const openModal = () => {
     setIsModalOpen(true);
   };
 
+  // Function to close the modal
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
+  // Function to handle the form submission and adding a new item to the inventory
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!name || !description) {
@@ -49,26 +56,30 @@ const AddItem = ({ items, setItems }) => {
         quantity,
       })
       .then((response) => {
+        // Clear the form fields after successful submission
         setName("");
         setDescription("");
         setQuantity("");
         setItems([...items, response.data]);
       })
-      .then(closeModal())
-
+      .then(closeModal()) // Close the modal
       .catch((error) => console.error(error));
   };
 
+  // Apply the styles to the form
   const classes = useStyles();
 
   return (
     <div>
+      {/* Add Item button to open the modal */}
       <Button variant="outlined" color="primary" onClick={openModal}>
         Add Item
       </Button>
       <Dialog open={isModalOpen} onClose={closeModal}>
+        {/* Modal header */}
         <DialogTitle>Add Item</DialogTitle>
         <DialogContent>
+          {/* Form to add a new item */}
           <form className={classes.form} onSubmit={handleSubmit}>
             <TextField
               id="name"
